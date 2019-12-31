@@ -8,9 +8,9 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 
 ## Overall implementation
 
-1. Pi4 configured to serve as a wireless access point that has a vlan configured to not let smart devices see my network
+1. Pi4 serving as a wireless access point without a bridge to my router, to keep foreign agents from spying on my devices or reporting back 
 
-3. Devices have been configured through tasmota / tuya-convert to accept MQTT instead of using their default app
+3. Devices have been configured through tuya-convert to run Tasmota, an open source smart device firmware that accepts MQTT so I did not have to install any smartphone app
 
 2. Pi4 runs a node server listening on my main network for basic POST endpoints to toggle smart devices via MQTT
 
@@ -30,7 +30,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 9. On Pi `arp -a` to find new IP address
 10. Navigate to that IP in smartphone browser and set up template https://templates.blakadder.com/awp04l.html
 11. If it doesn't work there is a submenu where you make sure FLAG is set to 0 (should look like `{"NAME":"AWP04L","GPIO":[57,255,255,131,255,134,0,0,21,17,132,56,255],"FLAG":0,"BASE":18}`
-12. Change topic in mqtt settings to something like `coffee` or `lamp` 
+12. Change client and topic in mqtt settings to something like `coffee` or `lamp` and Friendly Name in other settings to same
 
 ## MQTT related
 * Can test from pi with `mosquitto_sub -t mqtt_test` and `mosquitto_pub -t mqtt_test -m test` in two separate sshs
@@ -39,6 +39,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 * Topics are `coffee` or `lamp`
 * Example web request: http://<ip>/cm?cmnd=Power%20TOGGLE
 * Example MQTT cli request: mosquitto_pub -u [user] -P [pwd] -t cmnd/lamp/Power -m TOGGLE
+* mqtt module connection string must explicitly state `mqtt://` in url
 
 ## Documentation/Tutorials followed
 

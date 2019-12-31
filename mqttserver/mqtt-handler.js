@@ -23,25 +23,32 @@ module.exports = class MqttHandler {
     }
     this.client = null;
   }
+
+  log() {
+    // in case I ever need this thing logging somewhere
+    let msg = [...arguments].join(' ');
+    console.log(arguments);
+  }
+
   async initialize() {
     try {
       if (!this.client) {
-        console.log('connecting', this.url);
+        this.log('connecting', this.url);
         this.client = await mqtt.connectAsync(this.url, this.options);
-        console.log('subscribing');
+        this.log('subscribing');
         await this.subscribeToTopics();
-        console.log('registering handler');
+        this.log('registering handler');
         this.client.on('message', this.handleMessage);
       }
     }
     catch (e) {
-      console.log('initialize error');
+      this.log('initialize error');
       throw e;
     }
   }
 
   handleMessage(topic, message) {
-    console.log('new message', topic, message.toString());
+    this.log('new message', topic, message.toString());
   }
 
   async teardown() {
@@ -53,7 +60,7 @@ module.exports = class MqttHandler {
   async subscribeToTopics() {
     if (this.client) {
       for (let topic in topics) {
-        console.log('subscribing to', topic);
+        this.log('subscribing to', topic);
         await this.client.subscribe(topic);
       }
     }
@@ -63,7 +70,7 @@ module.exports = class MqttHandler {
       throw new Error(`Invalid topic: ${topic}`);
     }
     let fullTopic = 'cmnd/' + topic + '/' + command;
-    console.log('publishing', fullTopic, message);
+    this.log('publishing', fullTopic, message);
     await this.client.publish(fullTopic, message);
   }
 }
