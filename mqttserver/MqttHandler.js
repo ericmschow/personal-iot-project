@@ -21,6 +21,7 @@ module.exports = class MqttHandler {
       password: Buffer.from(passwd64, 'base64').toString('utf-8'),
       clientId: 'piMqttServer'
     }
+
     this.client = null;
   }
 
