@@ -37,7 +37,9 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 * If 'connection refused' need to run `mosquitto -d` and `sudo systemctl enable mosquitto.service`
 * From docs: Commands over MQTT are issued by using cmnd/%topic%/<command> <parameter> where %topic% is the topic of the device you're sending the command to. If there is no <parameter> (an empty MQTT message/payload), a query is sent for current status of the <command>.
 * Topics are `coffee` or `lamp`
-* Example: http://<ip>/cm?cmnd=Power%20TOGGLE
+* Example web request: http://<ip>/cm?cmnd=Power%20TOGGLE
+* Example MQTT cli request: mosquitto_pub -u [user] -P [pwd] -t cmnd/lamp/Power -m TOGGLE
+
 ## Documentation/Tutorials followed
 
 1. Setting up wifi on Pi https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md (up to the iptables stuff which was not followed, since the goal was to not allow true network access

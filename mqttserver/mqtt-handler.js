@@ -3,50 +3,67 @@ const topics = {
   coffee: true
 }
 
-const mqtt = require('mqtt');
+const mqtt = require('async-mqtt');
 const url = process.env.MQTT_ADDRESS;
 const user = process.env.MQTT_USER;
-const passwd = process.env.MQTT_PASSWD;
+const passwd64 = process.env.MQTT_PASSWD;
 
 module.exports = class MqttHandler {
   constructor() {
 
-    if (!(url && user && passwd)) {
-      throw new Error('failed to import env vars')
+    if (!(url && user && passwd64)) {
+      throw new Error('failed to import env vars');
     }
 
-    let options = {
+    this.url = url;
+    this.options = {
       username: user,
-      password: passwd
+      password: Buffer.from(passwd64, 'base64').toString('utf-8'),
+      clientId: 'piMqttServer'
     }
-    this.client = mqtt.connect(url,options)
-    this.client.on("error", err => {
-      // 'error' event is only on connection errors
-      console.error('cannot connect');
-      throw err;
-    });
+    this.client = null;
   }
-  teardown() {
+  async initialize() {
+    try {
+      if (!this.client) {
+        console.log('connecting', this.url);
+        this.client = await mqtt.connectAsync(this.url, this.options);
+        console.log('subscribing');
+        await this.subscribeToTopics();
+        console.log('registering handler');
+        this.client.on('message', this.handleMessage);
+      }
+    }
+    catch (e) {
+      console.log('initialize error');
+      throw e;
+    }
+  }
+
+  handleMessage(topic, message) {
+    console.log('new message', topic, message.toString());
+  }
+
+  async teardown() {
     if (this.client) {
-      this.client.end();
+      await this.client.end();
     }
   }
-  subscribeToTopics() {
+
+  async subscribeToTopics() {
     if (this.client) {
       for (let topic in topics) {
-        this.client.subscribe(topic, err => {
-          if (err) {
-            console.error('subscription error, topic: ' + topic)
-            throw err;
-          }
-        });
+        console.log('subscribing to', topic);
+        await this.client.subscribe(topic);
       }
     }
   }
-  publishMessage(topic, message) {
+  async publishMessage(topic, command, message) {
     if (!topics[topic]) {
       throw new Error(`Invalid topic: ${topic}`);
     }
-    this.client.publish(topic, message);
+    let fullTopic = 'cmnd/' + topic + '/' + command;
+    console.log('publishing', fullTopic, message);
+    await this.client.publish(fullTopic, message);
   }
 }
