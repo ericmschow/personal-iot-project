@@ -11,5 +11,5 @@ scp ./build.tar pi@$MQTT_PI_IP:/home/pi/mqttserver
 echo 'Cleaning up...'
 rm ./build.tar
 echo 'Extracting at destination...'
-ssh pi@$MQTT_PI_IP "cd /home/pi/mqttserver && tar -xf ./build.tar"
+ssh pi@$MQTT_PI_IP "cd /home/pi/mqttserver && tar -xf ./build.tar && npm i && pm2 restart IOTServer"
 echo 'Done!'
