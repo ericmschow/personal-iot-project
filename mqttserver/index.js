@@ -37,6 +37,17 @@ app.log = function() {
           res.status(500);
         }
       })
+      
+      app.get('/coffeeOff', async (req, res) => {
+        try {
+          await (app.controllers.coffee.setOff());
+          res.send('Depowered coffee agitator manually.');
+        }
+        catch (err) {
+          app.log('coffeeOff error', err);
+          res.status(500);
+        }
+      })
 
       app.get('/lamp', async (req, res) => {
         try {
