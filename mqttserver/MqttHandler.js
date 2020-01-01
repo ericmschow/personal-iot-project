@@ -28,7 +28,7 @@ module.exports = class MqttHandler {
   log() {
     // in case I ever need this thing logging somewhere
     let msg = [...arguments].join(' ');
-    console.log(arguments);
+    console.log(msg);
   }
 
   async initialize() {

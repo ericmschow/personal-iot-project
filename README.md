@@ -2,17 +2,17 @@
 
 I made this to keep track of what I did setting up my IOT network, for two purposes.
 
-1. Practice documenting a project
+1. Practice documenting a project since it's been a while
 
 2. Have documentation for when I inevitably want to touch this again in the future after the details have faded from memory
 
 ## Overall implementation
 
-1. Pi4 serving as a wireless access point without a bridge to my router, to keep foreign agents from spying on my devices or reporting back 
+1. Pi4 serving as a wireless access point without a bridge to my router, to keep foreign agents from spying on my devices or reporting back
 
 3. Devices have been configured through tuya-convert to run Tasmota, an open source smart device firmware that accepts MQTT so I did not have to install any smartphone app
 
-2. Pi4 runs a node server listening on my main network for basic POST endpoints to toggle smart devices via MQTT
+2. Pi4 runs a node server listening on my main network for basic POST endpoints to [toggle] smart devices via MQTT
 
 
 ## Steps to get new device operating
@@ -26,7 +26,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 6. Connect to the wifi `tasmota_####` broadcast by the device and browse to `192.168.4.1`
 7. run `sudo systemctl start dnsmasq` and `sudo systemctl start hostapd` to get Pi broadcasting
 7. Set up wifi to connect to the one broadcast by Pi (pi-fi). SSID case sensitive as well as pass of course.
-8. Connect to the pi-fi with a smartphone. 
+8. Connect to the pi-fi with a smartphone.
 9. On Pi `arp -a` to find new IP address
 10. Navigate to that IP in smartphone browser and set up template https://templates.blakadder.com/awp04l.html
 11. If it doesn't work there is a submenu where you make sure FLAG is set to 0 (should look like `{"NAME":"AWP04L","GPIO":[57,255,255,131,255,134,0,0,21,17,132,56,255],"FLAG":0,"BASE":18}`
@@ -37,7 +37,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 * If 'connection refused' need to run `mosquitto -d` and `sudo systemctl enable mosquitto.service`
 * From docs: Commands over MQTT are issued by using cmnd/%topic%/<command> <parameter> where %topic% is the topic of the device you're sending the command to. If there is no <parameter> (an empty MQTT message/payload), a query is sent for current status of the <command>.
 * Topics are `coffee` or `lamp`
-* Example web request: http://<ip>/cm?cmnd=Power%20TOGGLE
+* Example web request: http://[ip]/cm?cmnd=Power%20TOGGLE
 * Example MQTT cli request: mosquitto_pub -u [user] -P [pwd] -t cmnd/lamp/Power -m TOGGLE
 * mqtt module connection string must explicitly state `mqtt://` in url
 

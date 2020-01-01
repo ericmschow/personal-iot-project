@@ -12,3 +12,4 @@ echo 'Cleaning up...'
 rm ./build.tar
 echo 'Extracting at destination...'
 ssh pi@$MQTT_PI_IP "cd /home/pi/mqttserver && tar -xf ./build.tar"
+echo 'Done!'
