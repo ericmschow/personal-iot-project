@@ -21,6 +21,7 @@ app.log = function() {
       app.mqttHandler = new MqttHandler();
       await app.mqttHandler.initialize();
 
+      // todo if more devices purchased: make loader that iterates over files in folder
       app.controllers = {
         coffee: new CoffeeController(app),
         lamp: new LampController(app)
@@ -28,20 +29,19 @@ app.log = function() {
 
       app.get('/coffee', async (req, res) => {
         try {
-          res.send('Agitation request received');
+          res.send('<h1>Agitation request received</h1>'); // ack first because method exceeds browser timeout
           await (app.controllers.coffee.agitateWater());
-          res.send('Agitation complete if you\'re still listening.');
         }
         catch (err) {
           app.log('coffee error', err);
           res.status(500);
         }
       })
-      
+
       app.get('/coffeeOff', async (req, res) => {
         try {
           await (app.controllers.coffee.setOff());
-          res.send('Depowered coffee agitator manually.');
+          res.send('<h1>Depowered coffee agitator manually.</h1>');
         }
         catch (err) {
           app.log('coffeeOff error', err);
@@ -52,7 +52,7 @@ app.log = function() {
       app.get('/lamp', async (req, res) => {
         try {
           await (app.controllers.lamp.toggleOnce());
-          res.send('Lamp toggled.');
+          res.send('<h1>Lamp toggled.</h1>');
         }
         catch (err) {
           app.log('lamp error', err);
@@ -61,7 +61,7 @@ app.log = function() {
       })
 
       app.get('/', function (req, res) {
-        res.send('GET request to homepage')
+        res.send('<h1>GET request to homepage</h1>')
       })
 
       app.listen(port, () => console.log(`IOT Server listening on port ${port}!`))
