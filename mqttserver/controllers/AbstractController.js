@@ -1,24 +1,27 @@
-module.exports = new class AbstractController {
+module.exports = class AbstractController {
 
     constructor(app) {
+      if (!app) {
+        throw new Error('Controller called without app')
+      }
       this.app = app;
     }
 
-    toggleOnce(req, res) {
+    async toggleOnce(req, res) {
       if (!this.topic) {
         throw new Error('Topic not set');
       }
       await this.app.mqttHandler.publishMessage(this.topic, 'Power', 'TOGGLE');
     }
 
-    setOn(req, res) {
+    async setOn(req, res) {
       if (!this.topic) {
         throw new Error('Topic not set');
       }
       await this.app.mqttHandler.publishMessage(this.topic, 'Power', 'ON');
     }
 
-    setOff(req, res) {
+    async setOff(req, res) {
       if (!this.topic) {
         throw new Error('Topic not set');
       }
