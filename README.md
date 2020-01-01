@@ -4,7 +4,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 
 1. Practice documenting a project since it's been a while
 
-2. Have documentation for when I inevitably want to touch this again in the future after the details have faded from memory
+2. Have documentation for when I inevitably want to touch this again in the future, after the implementation details have faded from memory
 
 ## Overall implementation
 
@@ -12,7 +12,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 
 3. Devices have been configured through tuya-convert to run Tasmota, an open source smart device firmware that accepts MQTT so I did not have to install any smartphone app
 
-2. Pi4 runs a node server listening on my main network for basic POST endpoints to [toggle] smart devices via MQTT
+2. Pi4 runs an Express.js server (through PM2) that listens on my main network for basic REST endpoints to toggle smart devices via MQTT over the Pi's network
 
 
 ## Steps to get new device operating
