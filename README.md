@@ -55,7 +55,7 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 
 ## Documentation/Tutorials followed
 
-1. Setting up wifi on Pi https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md (up to the iptables stuff which was not followed, since the goal was to not allow true network access
+1. Setting up wifi on Pi https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md (up to the iptables stuff which was not followed, since the goal was to not allow true network access
 2. iptables primer https://www.hostinger.com/tutorials/iptables-tutorial
 3. how to set up post-flash https://everythingsmarthome.co.uk/howto/wifi-dimmer-switch-with-tasmota-tuya-dimmer-guide/
 4. video on flashing thru tuya-convert https://asciinema.org/a/2aDZweVGfliwc9TjB1ncwmKvm
