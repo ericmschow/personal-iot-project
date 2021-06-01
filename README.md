@@ -44,6 +44,16 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 11. (Note) If it doesn't work there is a submenu where you make sure FLAG is set to 0 (example to copy and paste: `{"NAME":"AWP04L","GPIO":[57,255,255,131,255,134,0,0,21,17,132,56,255],"FLAG":0,"BASE":18}`
 12. Change client and topic in mqtt settings to something like `coffee` or `lamp` and Friendly Name in other settings to same
 
+## Steps to install server
+
+1. Setup wifi on Pi (see documentation)
+2. Install nvm, mosquitto, pm2
+3. Add env vars to .bashrc
+4. Set destination IP address to env variable in publish script
+5. Use publish script
+6. Setup pm2 via `pm2 start index.js --name=IOTServer`
+7. `pm2 startup` and `pm2 save`
+
 ## MQTT related
 * Can test from pi with `mosquitto_sub -t mqtt_test` and `mosquitto_pub -t mqtt_test -m test` in two separate sshs
 * If 'connection refused' need to run `mosquitto -d` and `sudo systemctl enable mosquitto.service`
@@ -55,12 +65,12 @@ I made this to keep track of what I did setting up my IOT network, for two purpo
 
 ## Documentation/Tutorials followed
 
-1. Setting up wifi on Pi https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md (up to the iptables stuff which was not followed, since the goal was to not allow true network access
+1. Setting up wifi on Pi4, with eth0 https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md (up to the iptables stuff which was not followed, since the goal was to not allow true network access
 2. iptables primer https://www.hostinger.com/tutorials/iptables-tutorial
 3. how to set up post-flash https://everythingsmarthome.co.uk/howto/wifi-dimmer-switch-with-tasmota-tuya-dimmer-guide/
 4. video on flashing thru tuya-convert https://asciinema.org/a/2aDZweVGfliwc9TjB1ncwmKvm
 5. Github search for issues specific to plug model https://github.com/arendst/Tasmota/issues?utf8=%E2%9C%93&q=is%3Aissue+AWP04L
-
+6. Getting Pi Zero (no eth0) to broadcast AP as well as listen to main wifi https://github.com/peebles/rpi3-wifi-station-ap-stretch 
 ### Potential next steps
 
 1. Figure out how to do DNS on my local network such that my saved links aren't hardcoded IPs
