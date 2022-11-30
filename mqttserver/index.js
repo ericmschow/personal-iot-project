@@ -19,8 +19,8 @@ app.log = function() {
 (() => {
   async function start() {
     try {
-      // app.mqttHandler = new MqttHandler();
-      // await app.mqttHandler.initialize();
+      app.mqttHandler = new MqttHandler();
+      await app.mqttHandler.initialize();
       const coffeePage = (await fs.readFile('./pages/coffee.html')).toString(); // todo in future, using a router
 
       // todo if more devices purchased: make loader that iterates over files in folder
@@ -34,7 +34,7 @@ app.log = function() {
           await (app.controllers.coffee.agitateWater());
         }
         catch (err) {
-          app.log('coffeeDirect error', err);
+          app.log('coffeeOn error', err);
           res.status(500);
         }
       }
