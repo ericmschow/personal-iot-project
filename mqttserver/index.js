@@ -5,9 +5,10 @@ const express = require('express')
 const MqttHandler = require('./MqttHandler');
 const CoffeeController = require('./controllers/CoffeeController');
 const LampController = require('./controllers/LampController');
-
+const fs = require('fs/promises');
 const app = express()
-const port = process.env.MQTTSERVER_LISTENING_PORT;
+app.use('/public', express.static(require('path').join(__dirname, 'public')));
+const port = process.env.MQTTSERVER_LISTENING_PORT ?? 2112;
 
 app.log = function() {
   // in case I ever need this thing logging somewhere
@@ -18,27 +19,26 @@ app.log = function() {
 (() => {
   async function start() {
     try {
-      app.mqttHandler = new MqttHandler();
-      await app.mqttHandler.initialize();
+      // app.mqttHandler = new MqttHandler();
+      // await app.mqttHandler.initialize();
+      const coffeePage = (await fs.readFile('./pages/coffee.html')).toString(); // todo in future, using a router
 
       // todo if more devices purchased: make loader that iterates over files in folder
       app.controllers = {
         coffee: new CoffeeController(app),
         lamp: new LampController(app)
       };
-
-      app.get('/coffee', async (req, res) => {
+      const turnOnCoffee = async (req, res) => {
         try {
           res.send('<h1>Agitation request received</h1>'); // ack first because method exceeds browser timeout
           await (app.controllers.coffee.agitateWater());
         }
         catch (err) {
-          app.log('coffee error', err);
+          app.log('coffeeDirect error', err);
           res.status(500);
         }
-      })
-
-      app.get('/coffeeOff', async (req, res) => {
+      }
+      const turnOffCoffee = async (req, res) => {
         try {
           await (app.controllers.coffee.setOff());
           res.send('<h1>Depowered coffee agitator manually.</h1>');
@@ -47,7 +47,24 @@ app.log = function() {
           app.log('coffeeOff error', err);
           res.status(500);
         }
+      };
+
+      app.get('/coffeeOff', turnOffCoffee);
+      app.post('/coffeeOff', turnOffCoffee);
+      app.post('/coffeeOn', turnOnCoffee); 
+      app.get('/coffee', turnOnCoffee);
+
+
+      app.get('/coffeeMenu', async (req, res) => {
+        try {
+          res.send(coffeePage);
+        }
+        catch(err) {
+          app.log('coffee GET error', err);
+          res.status(500);
+        }
       })
+
 
       app.get('/lamp', async (req, res) => {
         try {
