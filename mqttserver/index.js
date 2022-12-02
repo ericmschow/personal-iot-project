@@ -28,7 +28,7 @@ app.log = function() {
         coffee: new CoffeeController(app),
         lamp: new LampController(app)
       };
-      const turnOnCoffee = async (req, res) => {
+      const turnOnCoffee = async (req, res, next) => {
         try {
           res.send('<h1>Agitation request received</h1>'); // ack first because method exceeds browser timeout
           await (app.controllers.coffee.agitateWater());
@@ -36,9 +36,10 @@ app.log = function() {
         catch (err) {
           app.log('coffeeOn error', err);
           res.status(500);
+          next(err);
         }
       }
-      const turnOffCoffee = async (req, res) => {
+      const turnOffCoffee = async (req, res, next) => {
         try {
           await (app.controllers.coffee.setOff());
           res.send('<h1>Depowered coffee agitator manually.</h1>');
@@ -46,6 +47,7 @@ app.log = function() {
         catch (err) {
           app.log('coffeeOff error', err);
           res.status(500);
+          next(err);
         }
       };
 

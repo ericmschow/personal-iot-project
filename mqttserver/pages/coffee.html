@@ -12,12 +12,15 @@
   <meta name="description" content="Control page for the kettle outlet" />
   <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
   <style>
-* {
-  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
-}
 
 body {
   background-image: url('public/water.png');
+  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: lightgray;
+  text-shadow: -1px 1px 2px #000,
+    1px 1px 2px #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000 !important;
 }
 
 input {
@@ -39,6 +42,19 @@ input {
   -webkit-user-select: none;
   touch-action: manipulation;
   width: 100%;
+  text-shadow: -1px 1px 2px #000,
+    1px 1px 2px #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000 !important;
+}
+input:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+input:active {
+  background-color: #6DAE36 !important;
+  box-shadow: 0 2px #666;
+  transform: translateY(4px);
 }
 .row {
   grid-column: 1 / 3;
@@ -67,37 +83,54 @@ input {
         <h2>Time for coffee? Or tea?</h2>
       </div>
     </div>
+    <div class="row"></div>
     <div class="row">
       <div class="item">
-        <input type="submit" onclick="coffeeOn()" value="Boil the jug"></input>
+        <input type="submit" id="coffeeOn" onclick="coffeeOn()" value="Boil the jug"></input>
       </div>
     </div>
     <div class="row">
       <div class="item">
-        <input class="off" onclick="coffeeOff()" type="submit" value="Turn it off"></input>
+        <input class="off" id="coffeeOff" onclick="coffeeOff()" type="submit" value="Turn it off"></input>
       </div>
-
+    </div>
+    <div class="row">
+      <div class="item">
+        <h4 id="errors"></h4>
+      </div>
     </div>
   </div>
 </body>
 <script>
-  function coffeeOn() {
+  function checkError(response) {
+  if (response.status >= 200 && response.status <= 299) {
+    return response.json();
+  } else {
+    throw Error(response.statusText);
+  }
+}
+  async function handleCoffee(operation) {
+    const button = document.getElementById(operation);
+    const errorDisplay = document.getElementById('errors');
+    errorDisplay.innerText = '';
     try {
-      
-      return fetch("coffeeOn", {method: "POST"});
+      button.setAttribute('disabled', '');
+      const res = await fetch(operation, {method: "POST"});
+      return checkError(res);
     }
     catch (e) {
       console.error(e);
+      errorDisplay.innerText = e.message;
+    }
+    finally {
+      button.removeAttribute('disabled');
     }
   }
+  function coffeeOn() {
+    return handleCoffee('coffeeOn');
+  }
   function coffeeOff() {
-    try {
-      
-      return fetch("coffeeOff", {method: "POST"});
-    }
-    catch (e) {
-      console.error(e);
-    }
+    return handleCoffee('coffeeOff');
   }
 </script>
 </html>
