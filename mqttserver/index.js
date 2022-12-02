@@ -5,10 +5,11 @@ const express = require('express')
 const MqttHandler = require('./MqttHandler');
 const CoffeeController = require('./controllers/CoffeeController');
 const LampController = require('./controllers/LampController');
-const fs = require('fs/promises');
+const fs = require('fs');
+const path = require('path');
 const app = express()
-app.use('/public', express.static(require('path').join(__dirname, 'public')));
-const port = process.env.MQTTSERVER_LISTENING_PORT ?? 2112;
+app.use('/public', express.static(path.join(__dirname, 'public')));
+const port = process.env.MQTTSERVER_LISTENING_PORT || 2112;
 
 app.log = function() {
   // in case I ever need this thing logging somewhere
@@ -21,7 +22,7 @@ app.log = function() {
     try {
       app.mqttHandler = new MqttHandler();
       await app.mqttHandler.initialize();
-      const coffeePage = (await fs.readFile('./pages/coffee.html')).toString(); // todo in future, using a router
+      const coffeePage = fs.readFileSync(path.join(__dirname, 'pages/coffee.html')).toString(); // todo in future, using a router
 
       // todo if more devices purchased: make loader that iterates over files in folder
       app.controllers = {
