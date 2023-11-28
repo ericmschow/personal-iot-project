@@ -1,7 +1,13 @@
+
+const CoffeeController = require('./controllers/CoffeeController');
+const LampController = require('./controllers/LampController');
 const topics = {
   lamp: true,
   coffee: true
 }
+
+const subPrefix = 'stat/';
+const pubPrefix = 'cmnd/'
 
 const mqtt = require('async-mqtt');
 const url = process.env.MQTT_ADDRESS;
@@ -23,6 +29,11 @@ module.exports = class MqttHandler {
     }
 
     this.client = null;
+
+    this.controllers = {
+      coffee: new CoffeeController(this),
+      lamp: new LampController(this)
+    };
   }
 
   log() {
@@ -39,7 +50,7 @@ module.exports = class MqttHandler {
         this.log('subscribing');
         await this.subscribeToTopics();
         this.log('registering handler');
-        this.client.on('message', this.handleMessage);
+        this.client.on('message', this.handleMessage.bind(this));
       }
     }
     catch (e) {
@@ -50,6 +61,14 @@ module.exports = class MqttHandler {
 
   handleMessage(topic, message) {
     this.log('new message', topic, message.toString());
+    const controllerName = topic.split('/')[1].toLowerCase();
+    const controller = this.controllers[controllerName];
+    if (!controller) {
+      this.log('no controller found for', controllerName)
+    }
+    const state = message.toString() === 'ON';
+    this.log('state', topic, state);
+    controller.state = state;
   }
 
   async teardown() {
@@ -61,8 +80,9 @@ module.exports = class MqttHandler {
   async subscribeToTopics() {
     if (this.client) {
       for (let topic in topics) {
-        this.log('subscribing to', topic);
-        await this.client.subscribe(topic);
+        const fullTopic = `${subPrefix}${topic}/POWER`
+        this.log('subscribing to', fullTopic);
+        await this.client.subscribe(fullTopic);
       }
     }
   }
@@ -70,7 +90,7 @@ module.exports = class MqttHandler {
     if (!topics[topic]) {
       throw new Error(`Invalid topic: ${topic}`);
     }
-    let fullTopic = 'cmnd/' + topic + '/' + command;
+    let fullTopic = pubPrefix + topic + '/' + command;
     this.log('publishing', fullTopic, message);
     await this.client.publish(fullTopic, message);
   }

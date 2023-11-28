@@ -2,8 +2,8 @@ const Promise = require('bluebird');
 const AbstractController = require('./AbstractController');
 
 module.exports = class LampController extends AbstractController {
-  constructor(app) {
-    super(app);
+  constructor(mqttHandler) {
+    super(mqttHandler);
     this.topic = 'lamp';
   }
 

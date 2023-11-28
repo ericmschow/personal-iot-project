@@ -2,8 +2,8 @@ const Promise = require('bluebird');
 const AbstractController = require('./AbstractController');
 
 module.exports = class CoffeeController extends AbstractController {
-  constructor(app) {
-    super(app);
+  constructor(mqttHandler) {
+    super(mqttHandler);
     this.topic = 'coffee';
     this.millisecondsToStayEngaged = 1000 * 60 * 5; // 5 minutes
   }
