@@ -1,5 +1,13 @@
 # MY IOT REPO
 
+Update, 11/2023
+
+* Added `hap-nodejs` support
+* Separated code better
+* Set up controllers to track their state
+
+End update
+
 I made this to keep track of what I did setting up my IOT network, for two purposes.
 
 1. Practice documenting a project since it's been a while
